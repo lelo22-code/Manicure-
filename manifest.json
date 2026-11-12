@@ -3,13 +3,14 @@
   "short_name": "Manicure",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#fff0f5",
+  "background_color": "#ffffff",
   "theme_color": "#c2185b",
   "icons": [
     {
       "src": "IMG-20261111-WA0037.jpg",
-      "sizes": "512x512",
-      "type": "image/jpeg"
+      "sizes": "any",
+      "type": "image/jpeg",
+      "purpose": "any"
     }
   ]
 }
