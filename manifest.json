@@ -1,0 +1,9 @@
+{
+  "name": "Manicure - Fluxo Financeiro",
+  "short_name": "Manicure",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff0f5",
+  "theme_color": "#c2185b",
+  "icons": [{ "src": "icon.png", "sizes": "512x512", "type": "image/png" }]
+}
