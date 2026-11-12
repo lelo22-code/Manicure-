@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manicure - Fluxo Financeiro</title>
+<style>
+*{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#fff0f5;margin:0;padding:16px;color:#333}
+h1{text-align:center;color:#c2185b;margin:6px 0 2px}
+p.sub{text-align:center;margin:0 0 14px;color:#777}
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.saldo{font-size:28px;font-weight:bold;text-align:center;color:#2e7d32}
+.linha{display:flex;justify-content:space-between;margin-top:10px;font-weight:bold}
+.ent{color:#2e7d32}.sai{color:#c62828}
+input,select{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd;border-radius:10px;font-size:16px}
+.botoes{display:flex;gap:8px}
+button{flex:1;padding:13px;border:0;border-radius:10px;font-size:16px;font-weight:bold;color:#fff;cursor:pointer}
+.btn-ent{background:#2e7d32}.btn-sai{background:#c62828}
+.item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #eee}
+.item b{display:block}.item small{color:#888}
+.del{background:#eee;color:#333;flex:0;padding:8px 12px}
+</style>
+</head>
+<body>
+<h1>💅 Manicure</h1>
+<p class="sub">Fluxo Financeiro</p>
+
+<div class="card">
+<div>Saldo Atual</div>
+<div class="saldo" id="saldo">R$ 0,00</div>
+<div class="linha"><span class="ent">Entradas: <span id="totalEnt">R$ 0,00</span></span><span class="sai">Saídas: <span id="totalSai">R$ 0,00</span></span></div>
+</div>
+
+<div class="card">
+<input id="desc" placeholder="Ex: Pé + Mão cliente Maria">
+<input id="valor" type="number" inputmode="decimal" placeholder="Valor R$ Ex: 50">
+<select id="tipo"><option value="entrada">Entrada 💰</option><option value="saida">Saída 💸</option></select>
+<input id="data" type="date">
+<div class="botoes">
+<button class="btn-ent" onclick="adicionar()">+ Adicionar</button>
+</div>
+</div>
+
+<div class="card">
+<h3 style="margin:0 0 8px">Lançamentos</h3>
+<div id="lista"></div>
+<button class="del" style="width:100%;margin-top:10px" onclick="limpar()">Limpar tudo</button>
+</div>
+
+<script>
+let dados = JSON.parse(localStorage.getItem('manicure')||'[]');
+document.getElementById('data').valueAsDate = new Date();
+function fmt(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function render(){
+let ent=0,sai=0;let html='';
+[...dados].reverse().forEach((it,i)=>{
+let idx=dados.length-1-i;
+if(it.tipo=='entrada')ent+=it.valor;else sai+=it.valor;
+html+=`<div class="item"><div><b>${it.desc}</b><small>${it.data} • ${it.tipo=='entrada'?'Entrada':'Saída'}</small></div><div style="text-align:right"><b style="color:${it.tipo=='entrada'?'#2e7d32':'#c62828'}">${it.tipo=='entrada'?'+':'-'} ${fmt(it.valor)}</b><br><button class="del" onclick="remover(${idx})">Excluir</button></div></div>`;
+});
+document.getElementById('lista').innerHTML=html||'Nenhum lançamento ainda.';
+document.getElementById('saldo').innerText=fmt(ent-sai);
+document.getElementById('totalEnt').innerText=fmt(ent);
+document.getElementById('totalSai').innerText=fmt(sai);
+}
+function adicionar(){
+let desc=document.getElementById('desc').value.trim();
+let valor=parseFloat(document.getElementById('valor').value);
+let tipo=document.getElementById('tipo').value;
+let data=document.getElementById('data').value;
+if(!desc||!valor){alert('Preencha descrição e valor');return}
+dados.push({desc,valor,tipo,data:data||new Date().toISOString().slice(0,10)});
+localStorage.setItem('manicure',JSON.stringify(dados));
+document.getElementById('desc').value='';document.getElementById('valor').value='';
+render();
+}
+function remover(i){if(confirm('Excluir?')){dados.splice(i,1);localStorage.setItem('manicure',JSON.stringify(dados));render()}}
+function limpar(){if(confirm('Apagar tudo?')){dados=[];localStorage.removeItem('manicure');render()}}
+render();
+</script>
+</body>
+</html>
